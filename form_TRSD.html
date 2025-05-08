@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Impugnação de Lançamento Taxa de Lixo - TRSD</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        /* Estilos gerais */
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        /* Estilos do cabeçalho */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            color: #333;
+            margin: 10px 0;
+            font-size: 24px;
+        }
+        .header h2 {
+            color: #555;
+            margin: 5px 0;
+            font-size: 18px;
+        }
+        /* Estilo do alerta */
+        .alert {
+            background-color: #ffe6e6;
+            border-left: 4px solid #ff6666;
+            padding: 10px 15px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+        /* Estilos das seções do formulário */
+        .form-section {
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .form-section h3 {
+            margin-top: 0;
+            background-color: #f0f0f0;
+            padding: 8px;
+            border-radius: 3px;
+        }
+        /* Layout das linhas e grupos de formulário */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-bottom: 10px;
+        }
+        .form-group {
+            flex: 1;
+            min-width: 200px; 
+            padding: 0 10px;
+            margin-bottom: 10px;
+        }
+        /* Estilos específicos para CAMPO III empilhar inputs */
+        .campo-iii-stacked .form-row {
+            flex-direction: column;
+        }
+        .campo-iii-stacked .form-group {
+            width: 100%; 
+            flex: 0 0 100%; 
+            padding: 0 0 10px 0; 
+        }
+         .campo-iii-stacked .form-group input[type="text"],
+         .campo-iii-stacked .form-group input[type="email"],
+         .campo-iii-stacked .form-group textarea {
+            width: 100%; 
+        }
+
+        /* Larguras específicas para inputs */
+        .form-group.small input[type="text"] {
+            max-width: 150px; 
+        }
+        .form-group.medium input[type="text"] {
+            max-width: 250px; 
+        }
+        .form-group.full {
+            flex: 0 0 100%;
+        }
+        /* Estilos dos labels e inputs */
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        input[readonly] {
+            background-color: #e9ecef; 
+            cursor: not-allowed;
+        }
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin-right: 5px;
+        }
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .radio-option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        /* Estilo para o texto da data/local */
+        .date-location-text { 
+             text-align: right;
+             margin-top: 20px; 
+             margin-bottom: 30px; 
+             font-size: 14px;
+             padding-right: 10px; 
+        }
+        
+        /* Estilo para o parágrafo da declaração */
+        .declaration-text {
+            font-size: 9pt; 
+            text-align: justify; 
+            margin-bottom: 15px; 
+        }
+        .declaration-text a { 
+             color: #0066cc;
+             text-decoration: underline;
+        }
+
+        /* Estilo para a linha e texto de assinatura */
+        .signature-line-container {
+            text-align: center;
+            margin-top: 10px; 
+            margin-bottom: 10px;
+        }
+        .signature-line-container .line {
+            border-top: 1px solid #000;
+            width: 70%; 
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 8px; 
+        }
+        .signature-line-container span {
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Estilo do botão de envio/gerar PDF */
+        .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+            width: 100%;
+        }
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+        /* Estilos da seção de instruções */
+        .instructions {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 30px;
+            font-size: 14px;
+        }
+        .instructions h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .instructions ol {
+            padding-left: 20px;
+        }
+        .instructions li {
+            margin-bottom: 8px;
+        }
+        /* Estilo dos botões de link */
+        .link-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #0066cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+        .link-button:hover {
+            background-color: #0052a3;
+        }
+
+        /* Estilos para validação de campos */
+        .invalid-field {
+            border: 1px solid red !important;
+            background-color: #ffe6e6 !important;
+        }
+        .invalid-group .radio-option label,
+        .invalid-group label {
+             color: red !important;
+        }
+         .invalid-group {
+            border: 1px dashed red !important;
+            padding: 5px;
+        }
+
+        /* Media Queries para responsividade */
+        @media (max-width: 768px) {
+            .form-group {
+                flex: 0 0 100%;
+                padding: 0 5px; 
+            }
+            .form-row { 
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .form-row .form-group { 
+                 width: 100%;
+                 padding: 0 0 10px 0;
+            }
+            .form-group.small input[type="text"],
+            .form-group.medium input[type="text"] {
+                max-width: 100%; 
+            }
+            .signature-line-container .line {
+                width: 90%;
+            }
+            /* Ajustes específicos para Campo I em mobile */
+            #campoUm .form-row .form-group.small,
+            #campoUm .form-row .form-group.medium,
+            #campoUm .form-row .form-group.large {
+                width: 100%;
+                max-width: 100%;
+            }
+             /* Garante que inputs do Campo III fiquem com largura total em mobile */
+            .campo-iii-stacked .form-group input[type="text"] {
+                max-width: 100%;
+            }
+             .date-location-text {
+                text-align: center; /* Centraliza data em mobile */
+                padding-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>REQUERIMENTO</h1>
+            <h2>IMPUGNAÇÃO DE LANÇAMENTO TAXA DE LIXO - TRSD</h2>
+        </div>
+
+        <div class="alert">
+            ATENÇÃO: LEIA ATENTAMENTE A ORIENTAÇÃO ANTES DE PREENCHER OS CAMPOS ABAIXO E JUNTE A DOCUMENTAÇÃO NECESSÁRIA - UTILIZE UM REQUERIMENTO POR IMÓVEL E POR ANO
+        </div>
+
+        <form id="impugnacaoForm">
+            <div class="form-section" id="campoUm">
+                <h3>CAMPO I - DADOS DO SUJEITO PASSIVO (nome da pessoa que consta como proprietário do imóvel na Certidão Inteiro Teor)</h3>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label for="nomeSujeitoPassivo">NOME / RAZÃO SOCIAL (Por extenso sem abreviações):</label>
+                        <input type="text" id="nomeSujeitoPassivo" name="nomeSujeitoPassivo" placeholder="Digite o nome completo ou razão social">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group medium">
+                        <label for="cpfCnpjSujeito">CPF / CNPJ:</label>
+                        <input type="text" id="cpfCnpjSujeito" name="cpfCnpjSujeito" placeholder="Digite o CPF ou CNPJ">
+                    </div>
+                    <div class="form-group medium">
+                        <label for="documentoIdentidadeSujeito">DOCUMENTO DE IDENTIDADE:</label>
+                        <input type="text" id="documentoIdentidadeSujeito" name="documentoIdentidadeSujeito" placeholder="Digite o número do documento">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group large">
+                        <label for="enderecoSujeito">ENDEREÇO:</label>
+                        <input type="text" id="enderecoSujeito" name="enderecoSujeito" placeholder="Rua, Avenida...">
+                    </div>
+                    <div class="form-group small">
+                        <label for="numeroSujeito">Nº:</label>
+                        <input type="text" id="numeroSujeito" name="numeroSujeito" placeholder="Número" style="width: 50%;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group medium">
+                        <label for="complementoSujeito">COMPLEMENTO:</label>
+                        <input type="text" id="complementoSujeito" name="complementoSujeito" placeholder="Apto, Bloco, Casa...">
+                    </div>
+                    <div class="form-group medium">
+                        <label for="bairroSujeito">BAIRRO:</label>
+                        <input type="text" id="bairroSujeito" name="bairroSujeito" placeholder="Digite o bairro">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group small">
+                        <label for="cepSujeito">CEP:</label>
+                        <input type="text" id="cepSujeito" name="cepSujeito" placeholder="00000-000" style="width: 70%;">
+                    </div>
+                    <div class="form-group medium">
+                        <label for="cidadeUfSujeito">CIDADE / UF:</label>
+                        <input type="text" id="cidadeUfSujeito" name="cidadeUfSujeito" placeholder="Cidade/UF">
+                    </div>
+                    <div class="form-group small">
+                        <label for="whatsappSujeito">WHATSAPP COM DDD:</label>
+                        <input type="text" id="whatsappSujeito" name="whatsappSujeito" placeholder="(00) 00000-0000" style="width: 70%;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group medium">
+                        <label for="emailSujeito">E-MAIL:</label>
+                        <input type="email" id="emailSujeito" name="emailSujeito" placeholder="email@exemplo.com">
+                    </div>
+                    <div class="form-group medium">
+                        <label for="telefoneSujeito">TELEFONE COM DDD:</label>
+                        <input type="text" id="telefoneSujeito" name="telefoneSujeito" placeholder="(00) 0000-0000">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>CAMPO II - DADOS DO REQUERENTE (Representante Legal, Procurador, Compromissário/Posseiro)</h3>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <div class="radio-group" id="tipoRequerenteGroup">
+                            <div class="radio-option">
+                                <input type="radio" id="proprioContribuinte" name="tipoRequerente" value="proprioContribuinte" checked>
+                                <label for="proprioContribuinte">O PRÓPRIO CONTRIBUINTE (Não é necessário preencher os dados repetidos)</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="procurador" name="tipoRequerente" value="procurador">
+                                <label for="procurador">PROCURADOR OU REPRESENTANTE LEGAL</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="compromissario" name="tipoRequerente" value="compromissario">
+                                <label for="compromissario">COMPROMISSÁRIO/POSSEIRO (Comprou o imóvel mas não averbou)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="dadosRequerente" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group full">
+                            <label for="nomeRequerenteCompleto">NOME COMPLETO (Por extenso sem abreviações):</label>
+                            <input type="text" id="nomeRequerenteCompleto" name="nomeRequerenteCompleto" placeholder="Digite o nome completo do requerente">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group medium">
+                            <label for="cpfRequerente">CPF:</label>
+                            <input type="text" id="cpfRequerente" name="cpfRequerente" placeholder="Digite o CPF do requerente">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group large">
+                            <label for="enderecoRequerenteRua">ENDEREÇO (RUA, AVENIDA):</label>
+                            <input type="text" id="enderecoRequerenteRua" name="enderecoRequerenteRua" placeholder="Rua, Avenida...">
+                        </div>
+                        <div class="form-group small">
+                            <label for="enderecoRequerenteNumero">Nº:</label>
+                            <input type="text" id="enderecoRequerenteNumero" name="enderecoRequerenteNumero" placeholder="Número" style="width: 50%;">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group medium">
+                            <label for="enderecoRequerenteComplemento">COMPLEMENTO:</label>
+                            <input type="text" id="enderecoRequerenteComplemento" name="enderecoRequerenteComplemento" placeholder="Apto, Bloco, Casa...">
+                        </div>
+                        <div class="form-group medium">
+                            <label for="enderecoRequerenteBairro">BAIRRO:</label>
+                            <input type="text" id="enderecoRequerenteBairro" name="enderecoRequerenteBairro" placeholder="Digite o bairro">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group small">
+                            <label for="enderecoRequerenteCep">CEP:</label>
+                            <input type="text" id="enderecoRequerenteCep" name="enderecoRequerenteCep" placeholder="00000-000" style="width: 70%;">
+                        </div>
+                        <div class="form-group medium">
+                            <label for="enderecoRequerenteCidadeUf">CIDADE / UF:</label>
+                            <input type="text" id="enderecoRequerenteCidadeUf" name="enderecoRequerenteCidadeUf" placeholder="Cidade/UF">
+                        </div>
+                        <div class="form-group medium">
+                            <label for="telefoneWhatsappRequerente">TELEFONE/WHATSAPP COM DDD:</label>
+                            <input type="text" id="telefoneWhatsappRequerente" name="telefoneWhatsappRequerente" placeholder="(00) 00000-0000">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group medium">
+                            <label for="emailRequerente">E-MAIL:</label>
+                            <input type="email" id="emailRequerente" name="emailRequerente" placeholder="email@exemplo.com">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section campo-iii-stacked">
+                <h3>CAMPO III - DADOS DO IMÓVEL OBJETO DO PEDIDO)</h3>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label for="inscricaoImobiliaria">INSCRIÇÃO IMOBILIÁRIA. ATENÇÃO: SOMENTE UMA INSCRIÇÃO POR REQUERIMENTO</label>
+                        <input type="text" id="inscricaoImobiliaria" name="inscricaoImobiliaria" placeholder="Somente números">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label for="enderecoImovel">ENDEREÇO:</label>
+                        <input type="text" id="enderecoImovel" name="enderecoImovel" placeholder="Rua, Avenida do imóvel">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label for="numeroImovel">Nº:</label>
+                        <input type="text" id="numeroImovel" name="numeroImovel" placeholder="Número" style="max-width:150px;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label for="complementoImovel">COMPLEMENTO:</label>
+                        <input type="text" id="complementoImovel" name="complementoImovel" placeholder="Apto, Bloco, Casa, Condomínio...">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label for="bairroImovel">BAIRRO:</label>
+                        <input type="text" id="bairroImovel" name="bairroImovel" placeholder="Bairro do imóvel">
+                    </div>
+                </div>
+                <div class="form-row">
+                     <div class="form-group full">
+                        <label for="cepImovel">CEP:</label>
+                        <input type="text" id="cepImovel" name="cepImovel" placeholder="00000-000" style="max-width:200px;">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label for="cidadeUfImovel">CIDADE / UF:</label>
+                        <input type="text" id="cidadeUfImovel" name="cidadeUfImovel" value="Porto Velho/RO" readonly>
+                    </div>
+                </div>
+                 <div class="form-row">
+                    <div class="form-group full">
+                        <label for="distritoImovel">DISTRITO (NÃO PREENCHER SE PVH):</label>
+                        <input type="text" id="distritoImovel" name="distritoImovel" placeholder="Nome do distrito (se aplicável)">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>CAMPO IV - INFORMAÇÕES SOBRE A IMPUGNAÇÃO</h3>
+                <div class="form-row">
+                    <div class="form-group medium">
+                        <label for="anoTaxaLixo">ANO DA TAXA LIXO:</label>
+                        <input type="text" id="anoTaxaLixo" name="anoTaxaLixo" placeholder="Ex: 2024">
+                    </div>
+                    <div class="form-group medium">
+                        <label for="valorTaxaCobrada">VALOR DA TAXA COBRADA R$:</label>
+                        <input type="text" id="valorTaxaCobrada" name="valorTaxaCobrada" placeholder="Ex: 150,00">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group medium">
+                        <label for="valorCorreto">QUAL O VALOR QUE CONSIDERA CORRETO:</label>
+                        <div style="display: flex; align-items: center;">
+                            <span style="margin-right: 5px;">R$</span>
+                            <input type="text" id="valorCorreto" name="valorCorreto" placeholder="Ex: 100,00">
+                        </div>
+                    </div>
+                    <div class="form-group medium">
+                        <label>CLIQUE AQUI E GERE O DAM (BOLETO) ONLINE NA OPÇÃO "TAXAS WEB"</label>
+                        <a href="https://gpi-trb.portovelho.ro.gov.br/ServerExec/acessoBase/?idPortal=dbde30ec-cf59-4803-9653-00121a704021" class="link-button" target="_blank">Gerar DAM</a>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label>POSSUI PROCESSOS ANTERIORES, INCLUSIVE DE ATUALIZAÇÃO CADASTRAL DE IMÓVEL:</label>
+                        <div class="radio-group" id="possuiProcessosGroup">
+                            <div class="radio-option">
+                                <input type="radio" id="processoNao" name="possuiProcessos" value="nao" checked>
+                                <label for="processoNao">NÃO</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="processoSim" name="possuiProcessos" value="sim">
+                                <label for="processoSim">SIM</label>
+                            </div>
+                            <div class="form-group small" id="numerosProcessosContainer" style="display: none;">
+                                <label for="numerosProcessos">Nºs.:</label>
+                                <input type="text" id="numerosProcessos" name="numerosProcessos" placeholder="Digite os números dos processos">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label>QUAL A UTILIZAÇÃO DO IMÓVEL:</label>
+                        <div class="radio-group" id="utilizacaoImovelGroup">
+                            <div class="radio-option">
+                                <input type="radio" id="residencial" name="utilizacaoImovel" value="residencial" checked>
+                                <label for="residencial">RESIDENCIAL</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="naoResidencial" name="utilizacaoImovel" value="naoResidencial">
+                                <label for="naoResidencial">NÃO RESIDENCIAL</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="misto" name="utilizacaoImovel" value="misto">
+                                <label for="misto">MISTO</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="naoEdificado" name="utilizacaoImovel" value="naoEdificado">
+                                <label for="naoEdificado">NÃO EDIFICADO</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="emRuinas" name="utilizacaoImovel" value="emRuinas">
+                                <label for="emRuinas">EM RUÍNAS</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label>O VALOR ESTÁ ERRADO POR MOTIVO(S) DE:</label>
+                        <div class="radio-group" id="motivoErroGroup">
+                            <div class="radio-option">
+                                <input type="checkbox" id="areaConstruida" name="motivoErro" value="areaConstruida">
+                                <label for="areaConstruida">ÁREA CONSTRUÍDA</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="checkbox" id="erroCalculo" name="motivoErro" value="erroCalculo">
+                                <label for="erroCalculo">ERRO DE CÁLCULO</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="checkbox" id="outrosMotivos" name="motivoErro" value="outros">
+                                <label for="outrosMotivos">OUTROS (Descreva no campo abaixo)</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full">
+                        <label for="motivacaoPedido">DESCREVA A MOTIVAÇÃO FÁTICA E DE DIREITO DO PEDIDO E TODA A MATÉRIA QUE ENTENDER ÚTIL, INDICANDO AS PROVAS QUE HOUVER: (aperte enter para parágrafo)</label>
+                        <textarea id="motivacaoPedido" name="motivacaoPedido" rows="8" placeholder="Informe de forma clara os fatos, fundamentos jurídicos e as provas que possuir. Caso precise de mais espaço, expanda a caixa clicando no canto inferior direito."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>CAMPO V - DATA E ASSINATURA DO REQUERENTE</h3>
+                <p class="declaration-text">
+                    Declaro que todas as informações prestadas são verdadeiras e estou ciente das leis aplicáveis, inclusive sobre crimes contra a ordem tributária. 
+                    Também autorizo o recebimento de notificações e intimações por meio do Domicílio Tributário Eletrônico (DTEL), WhatsApp e e-mail. 
+                    Por fim, declaro que tenho acesso ao DTEL. Caso ainda não tenha, <a href="https://gpi-trb.portovelho.ro.gov.br/ServerExec/acessoBase/?idPortal=dbde30ec-cf59-4803-9653-00121a704021" target="_blank">clique aqui</a> para fazer o credenciamento.
+                </p>
+                <p class="date-location-text" id="currentDateLocation">Porto Velho, RO ___/____/____.</p> 
+                <div class="signature-line-container">
+                     <div class="line"></div>
+                     <span>ASSINATURA DO REQUERENTE (INCLUSIVE A DIGITAL)</span>
+                </div>
+            </div>
+
+            <button type="button" id="gerarPdfBtn" class="btn-submit">GERAR E IMPRIMIR PDF</button>
+        </form>
+
+        <div class="instructions">
+            <h3>ATENÇÃO PARA O PREENCHIMENTO E DOCUMENTAÇÃO NECESSÁRIA</h3>
+            <h4>COMO PREENCHER ELETRONICAMENTE O FORMULÁRIO:</h4>
+            <ol>
+                <li>Se o campo da descrição da motivação do pedido for insuficiente, anexe uma petição em separada, em PDF, junto com o formulário preenchido;</li>
+                <li>Digite com letras MAIÚSCULAS;</li>
+                <li>O formulário deve estar assinado, preferencialmente com assinatura eletrônica. Utilize o serviço de assinatura eletrônica gratuitamente, pelo Gov.br, no link: <a href="https://www.gov.br/pt-br/servicos/assinatura-eletronica" class="link-button" target="_blank">Assinatura Eletrônica Gratuita</a></li>
+            </ol>
+            
+            <h4>COMO ENVIAR O FORMULÁRIO E DEMAIS DOCUMENTOS:</h4>
+            <ol start="4"> 
+                <li>O formulário, assim como toda a documentação, deve estar em PDF legível;</li>
+                <li>Cada documento deverá ser um arquivo de PDF. Ex.: RG/CPF um PDF; Certidão de Inteiro Teor um PDF;</li>
+            </ol>
+            
+            <h4>DOCUMENTOS MÍNIMOS OBRIGATÓRIOS DAS PESSOAS:</h4>
+            <ol start="7">
+                <li>Documento de identificação oficial, em que conste o número do CPF;</li>
+                <li>Comprovante de residência;</li>
+                <li>Para representante legal/procurador, procuração com poderes de representação perante à Administração Pública para a prática do ato;</li>
+                <li>Para compromissário, contrato de compra/venda do imóvel (comprou o imóvel, mas não registrou no cartório);</li>
+                <li>Se o requerente for o cônjuge e não constar no Cadastro Imobiliário, anexar Inteiro Teor ou Certidão de Casamento;</li>
+                <li>Para pessoa jurídica, contrato social e suas alterações, ou ato consolidado, Estatuto ou Ata de Constituição, com devido registro no órgão competente;</li>
+            </ol>
+            
+            <h4>DOCUMENTOS MÍNIMOS OBRIGATÓRIOS DO IMÓVEL:</h4>
+            <ol start="13">
+                <li>No caso de divergência de área do terreno ou de propriedade, apresentar a Inteiro Teor atualizada do imóvel;</li>
+                <li>No caso de divergência de dados coletados em vistoria ou em processo de obras, deve incluir os documentos que comprovem o alegado;</li>
+                <li>No caso de divergência de área construída, padrão construtivo ou do tipo de construção e demais características do imóvel, apresentar croqui ou planta e fotos do imóvel com data;</li>
+            </ol>
+            
+            <div style="background-color: #ffffe0; padding: 15px; margin-top: 20px; border-radius: 5px;">
+                <h4>ATENÇÃO</h4>
+                <h4>PARA PROTOCOLIZAR A IMPUGNAÇÃO</h4>
+                <p>Recolha a custa processual <a href="https://gpi-trb.portovelho.ro.gov.br/ServerExec/acessoBase/?idPortal=dbde30ec-cf59-4803-9653-00121a704021" target="_blank">Tarifa Abertura Processo</a> junte o comprovante de pagamento ao formulário, em PDF.</p>
+                <p>Processo Eletrônico e-PMPV, envie a documentação em PDF para: <a href="mailto:dtr.impugnacoes@gmail.com">dtr.impugnacoes@gmail.com</a></p>
+                <p>Acompanhamento do Processo Eletrônico e-PMPV, <a href="https://epmpv.portovelho.ro.gov.br/?a=consultaETCDF&f=formPrincipal" target="_blank">Clique Aqui acompanhar e-Proc</a>.</p>
+                <p>É obrigação do contribuinte informar alterações no imóvel dentro de 60 dias (Art. 227 da LC 878/21).<br>
+                As alterações serão consideradas para cálculo do tributo imobiliário somente para o ano subsequente em diante.<br>
+                (Art. 184 da LC 878/21). <a href="https://sapl.portovelho.ro.leg.br/norma/14805?display" target="_blank">Clique Aqui e acesse a LC 878/21</a>.</p>
+                <p>Importante gerar o DAM AVULSO e pagar o valor que considera correto para evitar a incidência de juros e correção monetária. Escolha o menu "taxas web" e depois "impugnação parcial lanc. TRSD"</p>
+                <p>Se a insatisfação do valor do tributo cobrado é por motivo de desatualização cadastral, formalize o processo de Atualização Cadastral em vez de impugnação.<a href="https://gpi-trb.portovelho.ro.gov.br/ServerExec/acessoBase/?idPortal=dbde30ec-cf59-4803-9653-00121a704021" target="_blank">Clique Aqui e acesse o requerimento específico</a>.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Preenche a data atual no HTML
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); // Janeiro é 0!
+            const year = today.getFullYear();
+            const dateLocationElement = document.getElementById('currentDateLocation');
+            if (dateLocationElement) {
+                 dateLocationElement.textContent = `Porto Velho, RO ${day}/${month}/${year}.`;
+            }
+
+            // Controla a visibilidade da seção de dados do requerente
+            document.querySelectorAll('input[name="tipoRequerente"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const dadosRequerente = document.getElementById('dadosRequerente');
+                    dadosRequerente.style.display = (this.id === 'proprioContribuinte') ? 'none' : 'block';
+                });
+            });
+
+            // Controla a visibilidade do campo de número de processos anteriores
+            document.querySelectorAll('input[name="possuiProcessos"]').forEach(radio => {
+                radio.addEventListener('change', function() {
+                    const numerosProcessosContainer = document.getElementById('numerosProcessosContainer');
+                    numerosProcessosContainer.style.display = (this.id === 'processoSim') ? 'block' : 'none';
+                });
+            });
+        });
+
+        // --- Funções de Validação ---
+        function validateField(elementId, fieldName, errors, isEmail = false, isOptional = false) {
+            const element = document.getElementById(elementId);
+            if (!element) return; // Sai se o elemento não for encontrado
+
+            const value = element.value.trim();
+            let isValid = true;
+            element.classList.remove('invalid-field'); // Remove estilo de erro por padrão
+
+            if (!isOptional && value === "") {
+                isValid = false;
+                errors.push(`O campo "${fieldName}" é obrigatório.`);
+            } else if (isEmail && value !== "" && !/^\S+@\S+\.\S+$/.test(value)) {
+                isValid = false;
+                errors.push(`"${fieldName}" não é um e-mail válido.`);
+            }
+
+            if (!isValid) {
+                element.classList.add('invalid-field');
+            }
+        }
+
+        function validateRadioGroup(groupName, fieldName, errors, groupContainerId) {
+            const selectedOption = document.querySelector(`input[name="${groupName}"]:checked`);
+            const groupContainer = document.getElementById(groupContainerId);
+            if(groupContainer) groupContainer.classList.remove('invalid-group'); // Remove estilo de erro
+
+            if (!selectedOption) {
+                errors.push(`Selecione uma opção para "${fieldName}".`);
+                if (groupContainer) groupContainer.classList.add('invalid-group');
+                return false;
+            }
+            return true;
+        }
+
+        function validateCheckboxGroup(groupName, fieldName, errors, groupContainerId, minChecked = 1) {
+            const checkedCount = document.querySelectorAll(`input[name="${groupName}"]:checked`).length;
+            const groupContainer = document.getElementById(groupContainerId);
+             if(groupContainer) groupContainer.classList.remove('invalid-group'); // Remove estilo de erro
+
+            if (checkedCount < minChecked) {
+                errors.push(`Selecione pelo menos ${minChecked} opção(ões) para "${fieldName}".`);
+                 if (groupContainer) groupContainer.classList.add('invalid-group');
+                return false;
+            }
+            return true;
+        }
+
+        // Função principal de validação
+        function runValidations() {
+            const errors = [];
+            // Limpa erros visuais anteriores
+            document.querySelectorAll('.invalid-field').forEach(el => el.classList.remove('invalid-field'));
+            document.querySelectorAll('.invalid-group').forEach(el => el.classList.remove('invalid-group'));
+
+            // Validações CAMPO I
+            validateField('nomeSujeitoPassivo', 'NOME / RAZÃO SOCIAL (Sujeito Passivo)', errors);
+            validateField('cpfCnpjSujeito', 'CPF / CNPJ (Sujeito Passivo)', errors);
+            validateField('documentoIdentidadeSujeito', 'DOCUMENTO DE IDENTIDADE (Sujeito Passivo)', errors);
+            validateField('enderecoSujeito', 'ENDEREÇO (RUA, AVENIDA) (Sujeito Passivo)', errors);
+            validateField('numeroSujeito', 'Nº (Endereço Sujeito Passivo)', errors);
+            validateField('complementoSujeito', 'COMPLEMENTO (Sujeito Passivo)', errors, false, true); 
+            validateField('bairroSujeito', 'BAIRRO (Sujeito Passivo)', errors);
+            validateField('cepSujeito', 'CEP (Sujeito Passivo)', errors);
+            validateField('cidadeUfSujeito', 'CIDADE / UF (Sujeito Passivo)', errors);
+            validateField('whatsappSujeito', 'WHATSAPP COM DDD (Sujeito Passivo)', errors);
+            validateField('emailSujeito', 'E-MAIL (Sujeito Passivo)', errors, true);
+            validateField('telefoneSujeito', 'TELEFONE COM DDD (Sujeito Passivo)', errors, false, true);
+
+            // Validações CAMPO II (condicional)
+            validateRadioGroup('tipoRequerente', 'TIPO DE REQUERENTE', errors, 'tipoRequerenteGroup');
+            const dadosRequerenteDiv = document.getElementById('dadosRequerente');
+            if (dadosRequerenteDiv && getComputedStyle(dadosRequerenteDiv).display !== 'none') {
+                validateField('nomeRequerenteCompleto', 'NOME COMPLETO (Requerente)', errors);
+                validateField('cpfRequerente', 'CPF (Requerente)', errors);
+                validateField('enderecoRequerenteRua', 'ENDEREÇO (RUA, AVENIDA) (Requerente)', errors);
+                validateField('enderecoRequerenteNumero', 'Nº (Endereço Requerente)', errors);
+                validateField('enderecoRequerenteComplemento', 'COMPLEMENTO (Requerente)', errors, false, true); 
+                validateField('enderecoRequerenteBairro', 'BAIRRO (Requerente)', errors);
+                validateField('enderecoRequerenteCep', 'CEP (Requerente)', errors);
+                validateField('enderecoRequerenteCidadeUf', 'CIDADE / UF (Requerente)', errors);
+                validateField('telefoneWhatsappRequerente', 'TELEFONE/WHATSAPP COM DDD (Requerente)', errors);
+                validateField('emailRequerente', 'E-MAIL (Requerente)', errors, true);
+            }
+
+            // Validações CAMPO III
+            validateField('inscricaoImobiliaria', 'INSCRIÇÃO IMOBILIÁRIA', errors);
+            validateField('enderecoImovel', 'ENDEREÇO (RUA, AVENIDA) (Imóvel)', errors);
+            validateField('numeroImovel', 'Nº (Endereço Imóvel)', errors);
+            validateField('complementoImovel', 'COMPLEMENTO (Imóvel)', errors, false, true); 
+            validateField('bairroImovel', 'BAIRRO (Imóvel)', errors);
+            validateField('cepImovel', 'CEP (Imóvel)', errors);
+            validateField('distritoImovel', 'DISTRITO (Imóvel)', errors, false, true); 
+
+            // Validações CAMPO IV
+            validateField('anoTaxaLixo', 'ANO DA TAXA LIXO', errors);
+            validateField('valorTaxaCobrada', 'VALOR DA TAXA COBRADA R$', errors);
+            validateField('valorCorreto', 'QUAL O VALOR QUE CONSIDERA CORRETO R$', errors);
+            validateRadioGroup('possuiProcessos', 'POSSUI PROCESSOS ANTERIORES', errors, 'possuiProcessosGroup');
+            const numerosProcessosContainer = document.getElementById('numerosProcessosContainer');
+            if (numerosProcessosContainer && getComputedStyle(numerosProcessosContainer).display !== 'none') {
+                validateField('numerosProcessos', 'Nºs Processos', errors);
+            }
+            validateRadioGroup('utilizacaoImovel', 'QUAL A UTILIZAÇÃO DO IMÓVEL', errors, 'utilizacaoImovelGroup');
+            validateCheckboxGroup('motivoErro', 'O VALOR ESTÁ ERRADO POR MOTIVO(S) DE', errors, 'motivoErroGroup', 1);
+            validateField('motivacaoPedido', 'DESCRIÇÃO DA MOTIVAÇÃO', errors);
+
+            // Se houver erros, exibe alerta e foca no primeiro campo inválido
+            if (errors.length > 0) {
+                alert("Por favor, corrija os seguintes erros antes de gerar o PDF:\n\n- " + errors.join("\n- "));
+                const firstInvalidFieldOrGroup = document.querySelector('.invalid-field, .invalid-group');
+                if (firstInvalidFieldOrGroup) {
+                    let focusableElement = firstInvalidFieldOrGroup;
+                    if (firstInvalidFieldOrGroup.classList.contains('invalid-group')) {
+                        focusableElement = firstInvalidFieldOrGroup.querySelector('input');
+                    }
+                    
+                    const formGroupParent = focusableElement.closest('.form-group') || focusableElement.closest('.form-row') || focusableElement;
+                    formGroupParent.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+                    if(focusableElement && typeof focusableElement.focus === 'function'){
+                         focusableElement.focus();
+                    }
+                }
+                return false; // Indica falha na validação
+            }
+            return true; // Indica sucesso na validação
+        }
+
+        // --- Geração do PDF ---
+        document.getElementById('gerarPdfBtn').addEventListener('click', function() {
+            // Executa validações antes de gerar o PDF
+            if (!runValidations()) {
+                return; // Interrompe se a validação falhar
+            }
+
+            // Inicializa o jsPDF
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('p', 'mm', 'a4'); // Retrato, milímetros, A4
+
+            // Variáveis de controle de posicionamento e layout
+            let y = 15; // Posição Y inicial
+            const pageHeight = doc.internal.pageSize.getHeight();
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const margin = 10; 
+            const contentWidth = pageWidth - (margin * 2);
+            const lineHeightSmall = 5; 
+            const lineHeightMedium = 7; 
+            const lineHeightLarge = 8; 
+
+            // Função auxiliar para verificar e adicionar nova página se necessário
+            function checkPageBreak(currentY, neededHeight = lineHeightMedium) {
+                if (currentY + neededHeight > pageHeight - margin) {
+                    doc.addPage();
+                    return margin; // Reseta Y para a margem superior
+                }
+                return currentY;
+            }
+
+           // Função auxiliar para adicionar texto ao PDF com opções de formatação
+            function addTextToPdf(text, x, currentY, options = {}) {
+                const fontSize = options.fontSize || 10;
+                // Calcula a altura aproximada da linha em mm
+                const lineHeight = (fontSize / 2.83) * (options.lineSpacingFactor || 1.15); 
+                // Divide o texto em linhas que cabem na largura definida
+                const lines = doc.splitTextToSize(text, options.maxWidth || contentWidth);
+                // Calcula a altura total necessária para o bloco de texto
+                const neededHeightForText = lines.length * lineHeight;
+
+                // Verifica se precisa de nova página antes de adicionar o texto
+                currentY = checkPageBreak(currentY, neededHeightForText);
+                
+                // Define fonte e tamanho
+                doc.setFontSize(fontSize);
+                doc.setFont(undefined, options.fontStyle || 'normal');
+                
+                // Adiciona o texto (jsPDF lida com o array de linhas)
+                doc.text(lines, x, currentY, { align: options.align || 'left' }); 
+                
+                // Retorna a nova posição Y após adicionar o texto e o espaçamento
+                return currentY + neededHeightForText + (options.spacingAfter || 0);
+            }
+
+            // Função para adicionar títulos de seção
+            function addSectionTitle(title, currentY) {
+                currentY = checkPageBreak(currentY, lineHeightLarge + 2);
+                currentY = addTextToPdf(title, margin, currentY, { fontSize: 14, fontStyle: 'bold', spacingAfter: 3 });
+                return currentY;
+            }
+
+            // Função para adicionar campos (Label: Valor)
+            function addField(label, value, currentY, options = {}) {
+                 if (value && value.trim() !== "") { // Só adiciona se houver valor
+                    const text = `${label}: ${value}`;
+                    currentY = addTextToPdf(text, margin + (options.indent || 5), currentY, { 
+                        fontSize: 10, 
+                        spacingAfter: 1, 
+                        maxWidth: contentWidth - (options.indent || 5) 
+                    });
+                }
+                return currentY;
+            }
+            
+            // Função para obter o valor de um grupo de radio buttons selecionado
+            function getRadioValue(name) {
+                const radio = document.querySelector(`input[name="${name}"]:checked`);
+                if (radio) {
+                    const label = document.querySelector(`label[for="${radio.id}"]`);
+                    // Retorna o texto do label associado, se existir, senão o valor do input
+                    return label ? label.textContent.trim() : radio.value;
+                }
+                return ""; // Retorna vazio se nenhum estiver selecionado
+            }
+
+            // Função para obter os valores dos checkboxes selecionados
+            function getCheckboxValues(name) {
+                const checkboxes = document.querySelectorAll(`input[name="${name}"]:checked`);
+                let values = [];
+                checkboxes.forEach(cb => {
+                    const label = document.querySelector(`label[for="${cb.id}"]`);
+                    // Adiciona o texto do label, se existir, senão o valor do input
+                    values.push(label ? label.textContent.trim() : cb.value);
+                });
+                return values.join(", "); // Retorna os valores separados por vírgula
+            }
+
+            // --- Construção do PDF ---
+
+            // Cabeçalho do PDF
+            y = addTextToPdf('REQUERIMENTO', pageWidth / 2, y, { fontSize: 16, fontStyle: 'bold', align: 'center', spacingAfter: 1 });
+            y = addTextToPdf('IMPUGNAÇÃO DE LANÇAMENTO TAXA DE LIXO - TRSD', pageWidth / 2, y, { fontSize: 12, align: 'center', spacingAfter: 5 });
+
+            // CAMPO I - DADOS DO SUJEITO PASSIVO
+            y = addSectionTitle('CAMPO I - DADOS DO SUJEITO PASSIVO', y);
+            y = addField('NOME / RAZÃO SOCIAL', document.getElementById('nomeSujeitoPassivo').value, y);
+            y = addField('CPF / CNPJ', document.getElementById('cpfCnpjSujeito').value, y);
+            y = addField('DOCUMENTO DE IDENTIDADE', document.getElementById('documentoIdentidadeSujeito').value, y);
+            y = addField('ENDEREÇO (RUA, AVENIDA)', document.getElementById('enderecoSujeito').value, y);
+            y = addField('Nº', document.getElementById('numeroSujeito').value, y);
+            y = addField('COMPLEMENTO', document.getElementById('complementoSujeito').value, y);
+            y = addField('BAIRRO', document.getElementById('bairroSujeito').value, y);
+            y = addField('CEP', document.getElementById('cepSujeito').value, y);
+            y = addField('CIDADE / UF', document.getElementById('cidadeUfSujeito').value, y);
+            y = addField('WHATSAPP COM DDD', document.getElementById('whatsappSujeito').value, y);
+            y = addField('E-MAIL', document.getElementById('emailSujeito').value, y);
+            y = addField('TELEFONE COM DDD', document.getElementById('telefoneSujeito').value, y);
+            y += lineHeightSmall; // Adiciona um pequeno espaço após a seção
+
+            // CAMPO II - DADOS DO REQUERENTE
+            y = addSectionTitle('CAMPO II - DADOS DO REQUERENTE', y);
+            const tipoRequerente = getRadioValue('tipoRequerente');
+            y = addField('TIPO DE REQUERENTE', tipoRequerente, y);
+            // Adiciona os dados do requerente apenas se não for o próprio contribuinte
+            if (document.getElementById('procurador').checked || document.getElementById('compromissario').checked) {
+                y = addField('NOME COMPLETO', document.getElementById('nomeRequerenteCompleto').value, y);
+                y = addField('CPF', document.getElementById('cpfRequerente').value, y);
+                y = addField('ENDEREÇO (RUA, AVENIDA)', document.getElementById('enderecoRequerenteRua').value, y);
+                y = addField('Nº', document.getElementById('enderecoRequerenteNumero').value, y);
+                y = addField('COMPLEMENTO', document.getElementById('enderecoRequerenteComplemento').value, y);
+                y = addField('BAIRRO', document.getElementById('enderecoRequerenteBairro').value, y);
+                y = addField('CEP', document.getElementById('enderecoRequerenteCep').value, y);
+                y = addField('CIDADE / UF', document.getElementById('enderecoRequerenteCidadeUf').value, y);
+                y = addField('TELEFONE/WHATSAPP COM DDD', document.getElementById('telefoneWhatsappRequerente').value, y);
+                y = addField('E-MAIL', document.getElementById('emailRequerente').value, y);
+            }
+            y += lineHeightSmall;
+
+            // CAMPO III - DADOS DO IMÓVEL
+            y = addSectionTitle('CAMPO III - DADOS DO IMÓVEL', y);
+            y = addField('INSCRIÇÃO IMOBILIÁRIA', document.getElementById('inscricaoImobiliaria').value, y);
+            y = addField('ENDEREÇO (RUA, AVENIDA)', document.getElementById('enderecoImovel').value, y);
+            y = addField('Nº', document.getElementById('numeroImovel').value, y);
+            y = addField('COMPLEMENTO', document.getElementById('complementoImovel').value, y);
+            y = addField('BAIRRO', document.getElementById('bairroImovel').value, y);
+            y = addField('CEP', document.getElementById('cepImovel').value, y);
+            y = addField('CIDADE / UF', document.getElementById('cidadeUfImovel').value, y);
+            y = addField('DISTRITO', document.getElementById('distritoImovel').value, y);
+            y += lineHeightSmall;
+
+            // CAMPO IV - INFORMAÇÕES SOBRE A IMPUGNAÇÃO
+            y = addSectionTitle('CAMPO IV - INFORMAÇÕES SOBRE A IMPUGNAÇÃO', y);
+            y = addField('ANO DA TAXA LIXO', document.getElementById('anoTaxaLixo').value, y);
+            y = addField('VALOR DA TAXA COBRADA R$', document.getElementById('valorTaxaCobrada').value, y);
+            y = addField('QUAL O VALOR QUE CONSIDERA CORRETO R$', document.getElementById('valorCorreto').value, y);
+            const possuiProcessos = getRadioValue('possuiProcessos');
+            y = addField('POSSUI PROCESSOS ANTERIORES', possuiProcessos, y);
+            if (document.getElementById('processoSim').checked) {
+                y = addField('Nºs Processos', document.getElementById('numerosProcessos').value, y);
+            }
+            y = addField('UTILIZAÇÃO DO IMÓVEL', getRadioValue('utilizacaoImovel'), y);
+            y = addField('O VALOR ESTÁ ERRADO POR MOTIVO(S) DE', getCheckboxValues('motivoErro'), y);
+            y += lineHeightSmall / 2;
+            y = addTextToPdf('DESCRIÇÃO DA MOTIVAÇÃO FÁTICA E DE DIREITO DO PEDIDO:', margin + 5, y, { fontSize: 10, fontStyle: 'bold', spacingAfter: 1 });
+            const motivacao = document.getElementById('motivacaoPedido').value;
+            y = addTextToPdf(motivacao, margin + 10, y, { fontSize: 10, maxWidth: contentWidth - 15, spacingAfter: 2 });
+            y += lineHeightSmall;
+
+            // CAMPO V - DATA E ASSINATURA
+            y = addSectionTitle('CAMPO V - DATA E ASSINATURA DO REQUERENTE', y);
+            // Novo texto da declaração
+            const declaracaoParte1 = "Declaro que todas as informações prestadas são verdadeiras e estou ciente das leis aplicáveis, inclusive sobre crimes contra a ordem tributária. Também autorizo o recebimento de notificações e intimações por meio do Domicílio Tributário Eletrônico (DTEL), WhatsApp e e-mail. Por fim, declaro que tenho acesso ao DTEL.";
+            const declaracaoParte2 = "Caso ainda não tenha, acesse o link para fazer o credenciamento: https://gpi-trb.portovelho.ro.gov.br/ServerExec/acessoBase/?idPortal=dbde30ec-cf59-4803-9653-00121a704021";
+            
+            // Adiciona a declaração alinhada à esquerda (default)
+            y = addTextToPdf(declaracaoParte1, margin, y, { 
+                fontSize: 9, 
+                maxWidth: contentWidth, 
+                spacingAfter: 1, 
+                lineSpacingFactor: 1.2,
+                align: 'left' // Alinhamento à esquerda para evitar justificação excessiva
+            });
+             // Adiciona a parte do link alinhada à esquerda
+            y = addTextToPdf(declaracaoParte2, margin, y, { 
+                fontSize: 8, 
+                maxWidth: contentWidth, 
+                spacingAfter: 3, 
+                lineSpacingFactor: 1.2,
+                align: 'left' 
+            });
+
+
+            // Gera a string da data atual
+            const today = new Date();
+            const day = String(today.getDate()).padStart(2, '0');
+            const month = String(today.getMonth() + 1).padStart(2, '0'); 
+            const year = today.getFullYear();
+            const dateString = `Porto Velho, RO ${day}/${month}/${year}.`; 
+
+            // Adiciona a data alinhada à direita com espaçamento ajustado
+            y = addTextToPdf(dateString, pageWidth - margin, y, { 
+                fontSize: 10, 
+                align: 'right', 
+                spacingAfter: lineHeightMedium * 3 // Espaçamento harmonioso após a data
+            }); 
+            
+            // Verifica quebra de página antes da assinatura
+            y = checkPageBreak(y, lineHeightMedium * 5); 
+            
+            // Posiciona e desenha a linha de assinatura
+            const signatureLineY = y + lineHeightMedium * 2; // Posição Y da linha
+            doc.setLineWidth(0.5); // Espessura da linha
+            // Desenha a linha centralizada (70% da largura do conteúdo)
+            doc.line(margin + contentWidth * 0.15, signatureLineY, pageWidth - margin - contentWidth * 0.15, signatureLineY); 
+            y = signatureLineY + 3; // Move Y para baixo da linha
+
+            // Adiciona o texto da assinatura centralizado
+            const signatureText = "ASSINATURA DO REQUERENTE (INCLUSIVE A DIGITAL)";
+            y = addTextToPdf(signatureText, pageWidth / 2 , y, { fontSize: 10, fontStyle: 'bold', spacingAfter: 2, align: 'center' });
+
+            // Tenta salvar o PDF
+            try {
+                 doc.save('requerimento_impugnacao_taxa_lixo.pdf');
+            } catch (e) {
+                console.error('Erro ao tentar salvar PDF:', e);
+                alert('Erro ao gerar PDF: ' + e.message);
+            }
+        });
+    </script>
+</body>
+</html>
+
