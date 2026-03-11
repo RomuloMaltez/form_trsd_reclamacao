@@ -171,6 +171,7 @@ function InputField({
   invalid = false,
   className = "",
   inputClassName = "",
+  maxLength,
 }: {
   id: string;
   label: string;
@@ -184,6 +185,7 @@ function InputField({
   invalid?: boolean;
   className?: string;
   inputClassName?: string;
+  maxLength?: number;
 }) {
   return (
     <div className={className}>
@@ -203,6 +205,7 @@ function InputField({
         onChange={onChange}
         placeholder={placeholder}
         readOnly={readOnly}
+        maxLength={maxLength}
         className={`w-full rounded border px-3 py-2 text-sm outline-none transition ${
           readOnly ? "cursor-not-allowed bg-gray-100" : "bg-white"
         } ${
@@ -298,12 +301,25 @@ function splitLongText(text: string, maxLength = 1800) {
 function parseCurrencyBR(value: string) {
   const normalized = value
     .replace(/\s/g, "")
+    .replace(/R\$/g, "")
     .replace(/\./g, "")
     .replace(",", ".")
     .replace(/[^\d.-]/g, "");
 
   const number = Number(normalized);
   return Number.isFinite(number) ? number : null;
+}
+
+function formatCurrencyInput(value: string): string {
+  const digits = value.replace(/\D/g, "");
+  if (!digits) return "";
+
+  const cents = parseInt(digits, 10);
+  const reais = (cents / 100).toFixed(2);
+  const [intPart, decPart] = reais.split(".");
+  const formattedInt = intPart.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+
+  return `${formattedInt},${decPart}`;
 }
 
 function formatCurrencyBR(value: number | null) {
@@ -335,6 +351,34 @@ function formatDateExtenso(date: Date) {
 
 function digitsOnly(value: string) {
   return value.replace(/\D/g, "");
+}
+
+function formatPhoneBR(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 11);
+
+  if (digits.length <= 2) return digits.length ? `(${digits}` : "";
+  if (digits.length <= 6) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  if (digits.length <= 10) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+  }
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+}
+
+function formatCpfCnpj(value: string): string {
+  const digits = value.replace(/\D/g, "").slice(0, 14);
+
+  if (digits.length <= 11) {
+    return digits
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d)/, "$1.$2")
+      .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+  }
+
+  return digits
+    .replace(/(\d{2})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1.$2")
+    .replace(/(\d{3})(\d)/, "$1/$2")
+    .replace(/(\d{4})(\d{1,2})$/, "$1-$2");
 }
 
 function isValidCpfLength(value: string) {
@@ -625,6 +669,39 @@ export default function ImpugnacaoForm() {
     setForm((prev) => ({
       ...prev,
       [name]: value,
+    }));
+  }
+
+  function handleCpfCnpjChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    const { name } = e.target;
+    const formatted = formatCpfCnpj(e.target.value);
+    setForm((prev) => ({
+      ...prev,
+      [name]: formatted,
+    }));
+  }
+
+  function handleCurrencyChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    const { name } = e.target;
+    const formatted = formatCurrencyInput(e.target.value);
+    setForm((prev) => ({
+      ...prev,
+      [name]: formatted,
+    }));
+  }
+
+  function handlePhoneChange(
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) {
+    const { name } = e.target;
+    const formatted = formatPhoneBR(e.target.value);
+    setForm((prev) => ({
+      ...prev,
+      [name]: formatted,
     }));
   }
 
@@ -1093,9 +1170,10 @@ export default function ImpugnacaoForm() {
                 id="cpfCnpjSujeito"
                 label="CPF / CNPJ:"
                 value={form.cpfCnpjSujeito}
-                onChange={handleChange}
-                placeholder="Digite o CPF ou CNPJ"
+                onChange={handleCpfCnpjChange}
+                placeholder="000.000.000-00 ou 00.000.000/0000-00"
                 invalid={isInvalidField("cpfCnpjSujeito")}
+                maxLength={18}
               />
 
               <InputField
@@ -1164,9 +1242,10 @@ export default function ImpugnacaoForm() {
                 id="whatsappSujeito"
                 label="WHATSAPP COM DDD:"
                 value={form.whatsappSujeito}
-                onChange={handleChange}
+                onChange={handlePhoneChange}
                 placeholder="(00) 00000-0000"
                 invalid={isInvalidField("whatsappSujeito")}
+                maxLength={15}
               />
 
               <InputField
@@ -1183,8 +1262,9 @@ export default function ImpugnacaoForm() {
                 id="telefoneSujeito"
                 label="TELEFONE COM DDD:"
                 value={form.telefoneSujeito}
-                onChange={handleChange}
+                onChange={handlePhoneChange}
                 placeholder="(00) 0000-0000"
+                maxLength={15}
               />
             </div>
           </SectionCard>
@@ -1326,9 +1406,10 @@ export default function ImpugnacaoForm() {
                     id="telefoneWhatsappRequerente"
                     label="TELEFONE/WHATSAPP COM DDD:"
                     value={form.telefoneWhatsappRequerente}
-                    onChange={handleChange}
+                    onChange={handlePhoneChange}
                     placeholder="(00) 00000-0000"
                     invalid={isInvalidField("telefoneWhatsappRequerente")}
+                    maxLength={15}
                   />
 
                   <InputField
@@ -1436,17 +1517,17 @@ export default function ImpugnacaoForm() {
                   id="valorTaxaCobrada"
                   label="VALOR DA TAXA COBRADA R$:"
                   value={form.valorTaxaCobrada}
-                  onChange={handleChange}
-                  placeholder="Ex: 150,00"
+                  onChange={handleCurrencyChange}
+                  placeholder="0,00"
                   invalid={isInvalidField("valorTaxaCobrada")}
                 />
 
                 <InputField
                   id="valorCorreto"
-                  label="QUAL O VALOR QUE CONSIDERA CORRETO:"
+                  label="QUAL O VALOR QUE CONSIDERA CORRETO R$:"
                   value={form.valorCorreto}
-                  onChange={handleChange}
-                  placeholder="Ex: 100,00"
+                  onChange={handleCurrencyChange}
+                  placeholder="0,00"
                   invalid={isInvalidField("valorCorreto")}
                 />
 
