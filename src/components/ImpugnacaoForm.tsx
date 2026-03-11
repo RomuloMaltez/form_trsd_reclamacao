@@ -1,7 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type CSSProperties } from "react";
-import html2canvas from "html2canvas";
+import { useMemo, useState } from "react";
 import { jsPDF } from "jspdf";
 
 type TipoRequerente = "proprioContribuinte" | "procurador" | "compromissario";
@@ -428,204 +427,8 @@ function getPdfGeneratedDateLabel() {
   return new Intl.DateTimeFormat("pt-BR").format(new Date());
 }
 
-function PdfPageFrame({ children }: { children: React.ReactNode }) {
-  return (
-    <div data-pdf-page="true" style={pdfPageWrapperStyle}>
-      <div style={pdfPaperStyle}>
-        <div style={pdfMunicipalHeaderStyle}>
-          <div style={pdfMunicipalTitleStyle}>
-            PREFEITURA MUNICIPAL DE PORTO VELHO
-          </div>
-          <div style={pdfMunicipalSubtitleStyle}>
-            SECRETARIA MUNICIPAL DE ECONOMIA
-          </div>
-        </div>
-
-        <div style={pdfTopGreenLineStyle} />
-
-        {children}
-
-        <div style={pdfFooterStyle}>
-          <span>Anexo – Requerimento de Impugnação TRSD</span>
-          <span>
-            Documento gerado eletronicamente em {getPdfGeneratedDateLabel()}
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-const pdfPageWrapperStyle: CSSProperties = {
-  width: "794px",
-  minHeight: "1123px",
-  padding: "24px",
-  boxSizing: "border-box",
-  background: "#efefef",
-  pageBreakAfter: "always",
-  fontFamily: "Arial, Helvetica, sans-serif",
-  color: "#24344c",
-};
-
-const pdfPaperStyle: CSSProperties = {
-  width: "100%",
-  minHeight: "1075px",
-  background: "#ffffff",
-  border: "1px solid #d8dde6",
-  padding: "20px 22px 16px",
-  boxSizing: "border-box",
-};
-
-const pdfMunicipalHeaderStyle: CSSProperties = {
-  textAlign: "center",
-  paddingTop: "2px",
-  paddingBottom: "10px",
-};
-
-const pdfMunicipalTitleStyle: CSSProperties = {
-  color: "#1e3a5f",
-  fontSize: "18px",
-  fontWeight: 700,
-  lineHeight: 1.2,
-};
-
-const pdfMunicipalSubtitleStyle: CSSProperties = {
-  color: "#1e3a5f",
-  fontSize: "13px",
-  fontWeight: 700,
-  lineHeight: 1.2,
-  marginTop: "2px",
-};
-
-const pdfMunicipalSmallTextStyle: CSSProperties = {
-  color: "#6b7280",
-  fontSize: "10px",
-  lineHeight: 1.2,
-  marginTop: "2px",
-};
-
-const pdfTopGreenLineStyle: CSSProperties = {
-  height: "2px",
-  background: "#70B643",
-  marginBottom: "14px",
-};
-
-const pdfHeaderStyle: CSSProperties = {
-  textAlign: "center",
-  padding: "6px 0 10px",
-};
-
-const pdfTitleStyle: CSSProperties = {
-  color: "#70B643",
-  fontSize: "20px",
-  fontWeight: 700,
-  textTransform: "uppercase",
-  lineHeight: 1.25,
-};
-
-const pdfSubTitleStyle: CSSProperties = {
-  color: "#1e3a5f",
-  fontSize: "12px",
-  fontWeight: 700,
-  marginTop: "4px",
-  textTransform: "uppercase",
-};
-
-const pdfHeaderTextStyle: CSSProperties = {
-  margin: "6px 0 0",
-  fontSize: "10.5px",
-  color: "#374151",
-  lineHeight: 1.5,
-};
-
-const pdfSectionTitleStyle: CSSProperties = {
-  background: "#1e3a5f",
-  color: "#ffffff",
-  padding: "8px 10px",
-  fontSize: "11px",
-  fontWeight: 700,
-  textTransform: "uppercase",
-  marginTop: "14px",
-  marginBottom: "10px",
-};
-
-const pdfFieldLineStyle: CSSProperties = {
-  fontSize: "10.5px",
-  lineHeight: 1.55,
-  marginBottom: "6px",
-  color: "#24344c",
-};
-
-const pdfParagraphStyle: CSSProperties = {
-  fontSize: "10.5px",
-  lineHeight: 1.65,
-  textAlign: "justify",
-  color: "#24344c",
-  margin: "0 0 10px",
-};
-
-const pdfTableStyle: CSSProperties = {
-  width: "100%",
-  borderCollapse: "collapse",
-  marginBottom: "10px",
-  fontSize: "10px",
-};
-
-const pdfThStyle: CSSProperties = {
-  border: "1px solid #cfd6e0",
-  background: "#1e3a5f",
-  color: "#ffffff",
-  padding: "7px 8px",
-  textAlign: "left",
-  fontWeight: 700,
-};
-
-const pdfCellStyle: CSSProperties = {
-  border: "1px solid #cfd6e0",
-  padding: "7px 8px",
-  verticalAlign: "top",
-  background: "#ffffff",
-};
-
-const pdfCheckboxLineStyle: CSSProperties = {
-  fontSize: "10.5px",
-  lineHeight: 1.55,
-  marginBottom: "8px",
-  color: "#24344c",
-};
-
-const pdfHrStyle: CSSProperties = {
-  borderTop: "1px solid #d7dde6",
-  margin: "18px 0",
-};
-
-const pdfSignatureAreaStyle: CSSProperties = {
-  marginTop: "96px",
-  textAlign: "center",
-  minHeight: "92px",
-};
-
-const pdfSignatureLineStyle: CSSProperties = {
-  width: "290px",
-  borderTop: "1px solid #1e3a5f",
-  margin: "34px auto 8px",
-};
-
-const pdfFooterStyle: CSSProperties = {
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
-  gap: "12px",
-  marginTop: "18px",
-  paddingTop: "8px",
-  borderTop: "1px solid #d8dde6",
-  fontSize: "9px",
-  color: "#6b7280",
-};
-
 export default function ImpugnacaoForm() {
   const [form, setForm] = useState<FormState>(initialState);
-  const pdfRef = useRef<HTMLDivElement>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [invalidFields, setInvalidFields] = useState<string[]>([]);
   const [invalidGroups, setInvalidGroups] = useState<string[]>([]);
@@ -1046,24 +849,10 @@ export default function ImpugnacaoForm() {
 
   async function generatePdf() {
     if (!validateForm()) return;
-    if (!pdfRef.current || isGeneratingPdf) return;
+    if (isGeneratingPdf) return;
 
     try {
       setIsGeneratingPdf(true);
-
-      if (document.fonts?.ready) {
-        await document.fonts.ready;
-      }
-
-      await new Promise((resolve) => setTimeout(resolve, 120));
-
-      const pageNodes = Array.from(
-        pdfRef.current.querySelectorAll('[data-pdf-page="true"]'),
-      ) as HTMLElement[];
-
-      if (!pageNodes.length) {
-        throw new Error("Nenhuma página PDF foi encontrada para renderização.");
-      }
 
       const pdf = new jsPDF({
         orientation: "portrait",
@@ -1072,36 +861,356 @@ export default function ImpugnacaoForm() {
         compress: true,
       });
 
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = pdf.internal.pageSize.getHeight();
+      const PW = 210, PH = 297, ML = 15, MR = 15, MT = 14, MB = 18;
+      const CW = PW - ML - MR;
+      let y = MT;
 
-      for (let index = 0; index < pageNodes.length; index += 1) {
-        const page = pageNodes[index];
+      const BLUE: [number, number, number]  = [30, 58, 95];
+      const GREEN: [number, number, number] = [112, 182, 67];
+      const DARK: [number, number, number]  = [36, 52, 76];
+      const GRAY: [number, number, number]  = [107, 114, 128];
+      const BORD: [number, number, number]  = [215, 221, 230];
+      const WHITE: [number, number, number] = [255, 255, 255];
 
-        const canvas = await html2canvas(page, {
-          scale: 2,
-          useCORS: true,
-          backgroundColor: "#efefef",
-          logging: false,
-          windowWidth: page.scrollWidth,
-          windowHeight: page.scrollHeight,
-        });
+      const tc = (c: [number, number, number]) => pdf.setTextColor(c[0], c[1], c[2]);
+      const fc = (c: [number, number, number]) => pdf.setFillColor(c[0], c[1], c[2]);
+      const dc = (c: [number, number, number]) => pdf.setDrawColor(c[0], c[1], c[2]);
 
-        const imgData = canvas.toDataURL("image/png", 1.0);
+      function hline(ly: number, c = BORD, lw = 0.25) {
+        dc(c);
+        pdf.setLineWidth(lw);
+        pdf.line(ML, ly, PW - MR, ly);
+      }
 
-        if (index > 0) {
+      function drawPageHeader() {
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(12.5);
+        tc(BLUE);
+        pdf.text("PREFEITURA MUNICIPAL DE PORTO VELHO", PW / 2, y + 4.5, { align: "center" });
+        y += 7;
+        pdf.setFontSize(9.5);
+        pdf.text("SECRETARIA MUNICIPAL DE ECONOMIA", PW / 2, y + 3, { align: "center" });
+        y += 7;
+        fc(GREEN);
+        pdf.rect(ML, y, CW, 1, "F");
+        y += 5;
+      }
+
+      function checkY(need: number) {
+        if (y + need > PH - MB) {
           pdf.addPage();
+          y = MT;
+          drawPageHeader();
+        }
+      }
+
+      function sectionTitle(title: string) {
+        checkY(12);
+        fc(BLUE);
+        pdf.rect(ML, y, CW, 7, "F");
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(9);
+        tc(WHITE);
+        pdf.text(title, ML + 3, y + 4.8);
+        y += 12;
+      }
+
+      function fieldLine(label: string, value: string) {
+        checkY(6);
+        pdf.setFontSize(9);
+        pdf.setFont("helvetica", "bold");
+        tc(DARK);
+        const lbl = `${label}: `;
+        const lw = pdf.getTextWidth(lbl);
+        pdf.text(lbl, ML, y);
+        pdf.setFont("helvetica", "normal");
+        const lines = pdf.splitTextToSize(value || "–", CW - lw) as string[];
+        pdf.text(lines[0] ?? "", ML + lw, y);
+        y += 5;
+        for (let i = 1; i < lines.length; i++) {
+          checkY(5);
+          pdf.text(lines[i], ML + lw, y);
+          y += 5;
+        }
+      }
+
+      function fields2(l1: string, v1: string, l2: string, v2: string) {
+        checkY(6);
+        const half = CW / 2 - 2;
+        const x2 = ML + CW / 2 + 2;
+        pdf.setFontSize(9);
+        pdf.setFont("helvetica", "bold");
+        tc(DARK);
+        const t1 = `${l1}: `;
+        const w1 = pdf.getTextWidth(t1);
+        pdf.text(t1, ML, y);
+        pdf.setFont("helvetica", "normal");
+        const v1Lines = pdf.splitTextToSize(v1 || "–", half - w1) as string[];
+        pdf.text(v1Lines[0] ?? "", ML + w1, y);
+        pdf.setFont("helvetica", "bold");
+        const t2 = `${l2}: `;
+        const w2 = pdf.getTextWidth(t2);
+        pdf.text(t2, x2, y);
+        pdf.setFont("helvetica", "normal");
+        const v2Lines = pdf.splitTextToSize(v2 || "–", half - w2) as string[];
+        pdf.text(v2Lines[0] ?? "", x2 + w2, y);
+        y += 5;
+      }
+
+      function para(text: string, fz = 9) {
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(fz);
+        tc(DARK);
+        const lines = pdf.splitTextToSize(text, CW) as string[];
+        for (const line of lines) {
+          checkY(5);
+          pdf.text(line, ML, y);
+          y += 5;
+        }
+        y += 2;
+      }
+
+      // ── PÁGINA 1 ─────────────────────────────────────────────────────────────
+      drawPageHeader();
+
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(14);
+      tc(GREEN);
+      pdf.text("REQUERIMENTO DE IMPUGNAÇÃO DE LANÇAMENTO", PW / 2, y + 4, { align: "center" });
+      y += 7;
+      pdf.setFontSize(9.5);
+      tc(BLUE);
+      pdf.text("TAXA DE LIXO – TRSD", PW / 2, y + 3, { align: "center" });
+      y += 6;
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8.5);
+      tc(GRAY);
+      pdf.text(
+        "Prefeitura Municipal de Porto Velho – Secretaria Municipal de Economia",
+        PW / 2, y + 3, { align: "center" },
+      );
+      y += 8;
+
+      // I
+      sectionTitle("I – DADOS DO SUJEITO PASSIVO");
+      fieldLine("Nome / Razão Social", form.nomeSujeitoPassivo);
+      fields2("CPF / CNPJ", form.cpfCnpjSujeito, "Documento de Identidade", form.documentoIdentidadeSujeito);
+      fields2("Endereço", form.enderecoSujeito, "Nº", form.numeroSujeito);
+      fields2("Complemento", form.complementoSujeito || "–", "Bairro", form.bairroSujeito);
+      fields2("CEP", form.cepSujeito, "Cidade/UF", form.cidadeUfSujeito);
+      fields2("WhatsApp", form.whatsappSujeito, "Telefone", form.telefoneSujeito || "–");
+      fieldLine("E-mail", form.emailSujeito);
+
+      // II
+      sectionTitle("II – DADOS DO REQUERENTE");
+      fieldLine("Tipo de Requerente", tipoRequerenteLabels[form.tipoRequerente]);
+      if (form.tipoRequerente === "proprioContribuinte") {
+        checkY(6);
+        pdf.setFont("helvetica", "italic");
+        pdf.setFontSize(8.5);
+        tc(GRAY);
+        pdf.text(
+          "O requerente é o próprio contribuinte, dispensando a repetição dos dados pessoais nesta seção.",
+          ML, y,
+        );
+        y += 6;
+      } else {
+        fieldLine("Nome Completo", form.nomeRequerenteCompleto);
+        fieldLine("CPF", form.cpfRequerente);
+        fields2("Endereço", form.enderecoRequerenteRua, "Nº", form.enderecoRequerenteNumero);
+        fields2("Complemento", form.enderecoRequerenteComplemento || "–", "Bairro", form.enderecoRequerenteBairro);
+        fields2("CEP", form.enderecoRequerenteCep, "Cidade/UF", form.enderecoRequerenteCidadeUf);
+        fieldLine("Telefone/WhatsApp", form.telefoneWhatsappRequerente);
+        fieldLine("E-mail", form.emailRequerente);
+      }
+
+      // III
+      sectionTitle("III – DADOS DO IMÓVEL");
+      fieldLine("Inscrição Imobiliária", form.inscricaoImobiliaria);
+      fields2("Endereço", form.enderecoImovel, "Nº", form.numeroImovel);
+      fields2("Complemento", form.complementoImovel || "–", "Bairro", form.bairroImovel);
+      fields2("CEP", form.cepImovel, "Cidade/UF", form.cidadeUfImovel);
+      fieldLine("Distrito", form.distritoImovel || "–");
+
+      // IV
+      sectionTitle("IV – RESUMO DA IMPUGNAÇÃO");
+      checkY(22);
+      const tX = [ML, ML + 30, ML + 72, ML + 134];
+      const tRH = 7;
+      fc(BLUE);
+      pdf.rect(ML, y, CW, tRH, "F");
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(8.5);
+      tc(WHITE);
+      const tHdrs = ["Ano", "Valor Cobrado", "Valor Considerado Correto", "Diferença"];
+      for (let i = 0; i < tHdrs.length; i++) {
+        pdf.text(tHdrs[i], tX[i] + 2, y + 4.8);
+      }
+      y += tRH;
+      dc(BORD);
+      pdf.setLineWidth(0.2);
+      pdf.rect(ML, y, CW, tRH, "S");
+      pdf.setFont("helvetica", "normal");
+      tc(DARK);
+      const tVals = [
+        form.anoTaxaLixo,
+        form.valorTaxaCobrada,
+        form.valorCorreto,
+        formatCurrencyBR(differenceValue),
+      ];
+      for (let i = 0; i < tVals.length; i++) {
+        pdf.text(tVals[i] || "–", tX[i] + 2, y + 4.8);
+      }
+      y += tRH + 5;
+
+      fields2(
+        "Possui processos anteriores",
+        possuiProcessosLabels[form.possuiProcessos] +
+          (form.possuiProcessos === "sim" && form.numerosProcessos
+            ? ` (${form.numerosProcessos})`
+            : ""),
+        "Utilização do imóvel",
+        utilizacaoImovelLabels[form.utilizacaoImovel],
+      );
+      fieldLine(
+        "Motivos alegados",
+        form.motivoErro.map((m) => motivoErroLabels[m]).join(", ") || "–",
+      );
+
+      // ── FUNDAMENTAÇÃO ────────────────────────────────────────────────────────
+      for (let idx = 0; idx < motivacaoChunks.length; idx++) {
+        pdf.addPage();
+        y = MT;
+        drawPageHeader();
+        pdf.setFont("helvetica", "bold");
+        pdf.setFontSize(14);
+        tc(GREEN);
+        pdf.text("FUNDAMENTAÇÃO DO PEDIDO", PW / 2, y + 4, { align: "center" });
+        y += 7;
+        pdf.setFontSize(9.5);
+        tc(BLUE);
+        pdf.text(
+          idx === 0 ? "Descrição fática e de direito" : "Continuação",
+          PW / 2, y + 3, { align: "center" },
+        );
+        y += 6;
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(8.5);
+        tc(GRAY);
+        pdf.text(
+          "Requerimento de Impugnação de Lançamento – TRSD",
+          PW / 2, y + 3, { align: "center" },
+        );
+        y += 8;
+
+        if (idx === 0) {
+          sectionTitle("V – INFORMAÇÕES SOBRE A IMPUGNAÇÃO");
+          para(
+            "O requerente apresenta impugnação administrativa do lançamento da Taxa de " +
+            "Resíduos Sólidos Domiciliares (TRSD), referente ao imóvel acima identificado, " +
+            "sustentando que o valor lançado não corresponde à realidade fática e cadastral " +
+            "do bem, pelas razões a seguir expostas.",
+          );
         }
 
-        pdf.addImage(
-          imgData,
-          "PNG",
-          0,
-          0,
-          pdfWidth,
-          pdfHeight,
-          undefined,
-          "FAST",
+        sectionTitle(idx === 0 ? "VI – MOTIVAÇÃO DO PEDIDO" : "VI – MOTIVAÇÃO DO PEDIDO (CONTINUAÇÃO)");
+        para(motivacaoChunks[idx]);
+      }
+
+      // ── DECLARAÇÃO ───────────────────────────────────────────────────────────
+      pdf.addPage();
+      y = MT;
+      drawPageHeader();
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(14);
+      tc(GREEN);
+      pdf.text("DECLARAÇÃO E ASSINATURA", PW / 2, y + 4, { align: "center" });
+      y += 7;
+      pdf.setFontSize(9.5);
+      tc(BLUE);
+      pdf.text("Requerimento de Impugnação de Lançamento – TRSD", PW / 2, y + 3, { align: "center" });
+      y += 6;
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8.5);
+      tc(GRAY);
+      pdf.text(
+        "Prefeitura Municipal de Porto Velho – Secretaria Municipal de Economia",
+        PW / 2, y + 3, { align: "center" },
+      );
+      y += 8;
+
+      sectionTitle("VII – DECLARAÇÃO");
+      para(
+        "Declaro, sob as penas da lei, que todas as informações constantes neste requerimento " +
+        "são verdadeiras, completas e compatíveis com a documentação apresentada.",
+      );
+      para(
+        "Declaro, ainda, estar ciente das disposições legais aplicáveis à matéria, inclusive " +
+        "quanto à responsabilidade por eventual omissão ou falsidade de informações, bem como " +
+        "autorizo o recebimento de notificações e intimações por meio do Domicílio Tributário " +
+        "Eletrônico (DTEL), WhatsApp e e-mail.",
+      );
+      para(
+        "Reconheço que a presente impugnação será analisada pela Administração Tributária " +
+        "Municipal com base nos fatos, fundamentos e documentos apresentados, podendo ser " +
+        "deferida ou indeferida conforme a legislação vigente.",
+      );
+
+      hline(y);
+      y += 7;
+
+      checkY(8);
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(9);
+      tc(DARK);
+      pdf.text(`Porto Velho/RO, ${formatDateExtenso(new Date())}`, PW / 2, y, { align: "center" });
+      y += 22;
+
+      checkY(20);
+      hline(y, BLUE, 0.5);
+      y += 5;
+      pdf.setFont("helvetica", "bold");
+      pdf.setFontSize(9);
+      tc(DARK);
+      pdf.text(signatureName || "______________________________", PW / 2, y, { align: "center" });
+      y += 5;
+      pdf.setFont("helvetica", "normal");
+      pdf.text(`CPF/CNPJ: ${signatureCpf || "–"}`, PW / 2, y, { align: "center" });
+      y += 10;
+
+      hline(y);
+      y += 6;
+      checkY(10);
+      pdf.setFontSize(8);
+      tc(DARK);
+      pdf.setFont("helvetica", "bold");
+      const blLabel = "BASE LEGAL: ";
+      const blLw = pdf.getTextWidth(blLabel);
+      pdf.text(blLabel, ML, y);
+      pdf.setFont("helvetica", "normal");
+      const blText =
+        "Legislação tributária municipal aplicável à Taxa de Resíduos Sólidos Domiciliares " +
+        "(TRSD), incluindo a LC 878/2021 e normas correlatas mencionadas no requerimento.";
+      const blLines = pdf.splitTextToSize(blText, CW - blLw) as string[];
+      pdf.text(blLines[0] ?? "", ML + blLw, y);
+      for (let i = 1; i < blLines.length; i++) {
+        y += 4.5;
+        checkY(5);
+        pdf.text(blLines[i], ML, y);
+      }
+
+      // Rodapé em todas as páginas
+      const total = pdf.getNumberOfPages();
+      for (let p = 1; p <= total; p++) {
+        pdf.setPage(p);
+        hline(PH - 10, BORD, 0.2);
+        pdf.setFont("helvetica", "normal");
+        pdf.setFontSize(7.5);
+        tc(GRAY);
+        pdf.text("Anexo – Requerimento de Impugnação TRSD", ML, PH - 6);
+        pdf.text(
+          `Gerado eletronicamente em ${getPdfGeneratedDateLabel()} — Pág. ${p}/${total}`,
+          PW - MR, PH - 6, { align: "right" },
         );
       }
 
@@ -1183,6 +1292,7 @@ export default function ImpugnacaoForm() {
                 onChange={handleChange}
                 placeholder="Digite o número do documento"
                 invalid={isInvalidField("documentoIdentidadeSujeito")}
+                maxLength={10}
               />
 
               <InputField
@@ -1678,258 +1788,6 @@ export default function ImpugnacaoForm() {
         </div>
       </section>
 
-      <div
-        ref={pdfRef}
-        style={{
-          position: "absolute",
-          left: "-9999px",
-          top: 0,
-          zIndex: -1,
-        }}
-      >
-        <PdfPageFrame>
-          <div style={pdfHeaderStyle}>
-            <div style={pdfTitleStyle}>
-              REQUERIMENTO DE IMPUGNAÇÃO DE LANÇAMENTO
-            </div>
-            <div style={pdfSubTitleStyle}>Taxa de Lixo - TRSD</div>
-            <p style={pdfHeaderTextStyle}>
-              Prefeitura Municipal de Porto Velho - Secretaria Municipal de
-              Economia
-            </p>
-          </div>
-
-          <div style={pdfSectionTitleStyle}>I - DADOS DO SUJEITO PASSIVO</div>
-          <div style={pdfFieldLineStyle}>
-            <strong>Nome / Razão Social:</strong> {form.nomeSujeitoPassivo}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>CPF / CNPJ:</strong> {form.cpfCnpjSujeito} &nbsp;&nbsp;
-            <strong>Documento de Identidade:</strong>{" "}
-            {form.documentoIdentidadeSujeito}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>Endereço:</strong> {form.enderecoSujeito},{" "}
-            {form.numeroSujeito}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>Complemento:</strong> {form.complementoSujeito || "-"}{" "}
-            &nbsp;&nbsp;
-            <strong>Bairro:</strong> {form.bairroSujeito}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>CEP:</strong> {form.cepSujeito} &nbsp;&nbsp;
-            <strong>Cidade/UF:</strong> {form.cidadeUfSujeito}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>WhatsApp:</strong> {form.whatsappSujeito} &nbsp;&nbsp;
-            <strong>Telefone:</strong> {form.telefoneSujeito || "-"}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>E-mail:</strong> {form.emailSujeito}
-          </div>
-
-          <div style={pdfSectionTitleStyle}>II - DADOS DO REQUERENTE</div>
-          <div style={pdfFieldLineStyle}>
-            <strong>Tipo de Requerente:</strong>{" "}
-            {tipoRequerenteLabels[form.tipoRequerente]}
-          </div>
-
-          {form.tipoRequerente === "proprioContribuinte" ? (
-            <p style={pdfParagraphStyle}>
-              O requerente é o próprio contribuinte, dispensando a repetição dos
-              dados pessoais nesta seção.
-            </p>
-          ) : (
-            <>
-              <div style={pdfFieldLineStyle}>
-                <strong>Nome Completo:</strong> {form.nomeRequerenteCompleto}
-              </div>
-              <div style={pdfFieldLineStyle}>
-                <strong>CPF:</strong> {form.cpfRequerente}
-              </div>
-              <div style={pdfFieldLineStyle}>
-                <strong>Endereço:</strong> {form.enderecoRequerenteRua},{" "}
-                {form.enderecoRequerenteNumero}
-              </div>
-              <div style={pdfFieldLineStyle}>
-                <strong>Complemento:</strong>{" "}
-                {form.enderecoRequerenteComplemento || "-"} &nbsp;&nbsp;
-                <strong>Bairro:</strong> {form.enderecoRequerenteBairro}
-              </div>
-              <div style={pdfFieldLineStyle}>
-                <strong>CEP:</strong> {form.enderecoRequerenteCep} &nbsp;&nbsp;
-                <strong>Cidade/UF:</strong> {form.enderecoRequerenteCidadeUf}
-              </div>
-              <div style={pdfFieldLineStyle}>
-                <strong>Telefone/WhatsApp:</strong>{" "}
-                {form.telefoneWhatsappRequerente}
-              </div>
-              <div style={pdfFieldLineStyle}>
-                <strong>E-mail:</strong> {form.emailRequerente}
-              </div>
-            </>
-          )}
-
-          <div style={pdfSectionTitleStyle}>III - DADOS DO IMÓVEL</div>
-          <div style={pdfFieldLineStyle}>
-            <strong>Inscrição Imobiliária:</strong> {form.inscricaoImobiliaria}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>Endereço:</strong> {form.enderecoImovel},{" "}
-            {form.numeroImovel}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>Complemento:</strong> {form.complementoImovel || "-"}{" "}
-            &nbsp;&nbsp;
-            <strong>Bairro:</strong> {form.bairroImovel}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>CEP:</strong> {form.cepImovel} &nbsp;&nbsp;
-            <strong>Cidade/UF:</strong> {form.cidadeUfImovel}
-          </div>
-          <div style={pdfFieldLineStyle}>
-            <strong>Distrito:</strong> {form.distritoImovel || "-"}
-          </div>
-
-          <div style={pdfSectionTitleStyle}>IV - RESUMO DA IMPUGNAÇÃO</div>
-          <table style={pdfTableStyle}>
-            <thead>
-              <tr>
-                <th style={pdfThStyle}>Ano</th>
-                <th style={pdfThStyle}>Valor Cobrado</th>
-                <th style={pdfThStyle}>Valor Considerado Correto</th>
-                <th style={pdfThStyle}>Diferença</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style={pdfCellStyle}>{form.anoTaxaLixo}</td>
-                <td style={pdfCellStyle}>{form.valorTaxaCobrada}</td>
-                <td style={pdfCellStyle}>{form.valorCorreto}</td>
-                <td style={pdfCellStyle}>
-                  {formatCurrencyBR(differenceValue)}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div style={pdfFieldLineStyle}>
-            <strong>Possui processos anteriores:</strong>{" "}
-            {possuiProcessosLabels[form.possuiProcessos]}
-            {form.possuiProcessos === "sim" && form.numerosProcessos
-              ? ` (${form.numerosProcessos})`
-              : ""}
-          </div>
-
-          <div style={pdfFieldLineStyle}>
-            <strong>Utilização do imóvel:</strong>{" "}
-            {utilizacaoImovelLabels[form.utilizacaoImovel]}
-          </div>
-
-          <div style={pdfCheckboxLineStyle}>
-            <strong>Motivos alegados:</strong>{" "}
-            {form.motivoErro.map((item) => motivoErroLabels[item]).join(", ")}
-          </div>
-        </PdfPageFrame>
-
-        {motivacaoChunks.map((chunk, index) => (
-          <PdfPageFrame key={`pdf-mot-${index}`}>
-            <div style={pdfHeaderStyle}>
-              <div style={pdfTitleStyle}>FUNDAMENTAÇÃO DO PEDIDO</div>
-              <div style={pdfSubTitleStyle}>
-                {index === 0 ? "Descrição fática e de direito" : "Continuação"}
-              </div>
-              <p style={pdfHeaderTextStyle}>
-                Requerimento de Impugnação de Lançamento - TRSD
-              </p>
-            </div>
-
-            {index === 0 && (
-              <>
-                <div style={pdfSectionTitleStyle}>
-                  V - INFORMAÇÕES SOBRE A IMPUGNAÇÃO
-                </div>
-
-                <p style={pdfParagraphStyle}>
-                  O requerente apresenta impugnação administrativa do lançamento
-                  da Taxa de Resíduos Sólidos Domiciliares (TRSD), referente ao
-                  imóvel acima identificado, sustentando que o valor lançado não
-                  corresponde à realidade fática e cadastral do bem, pelas
-                  razões a seguir expostas.
-                </p>
-              </>
-            )}
-
-            <div style={pdfSectionTitleStyle}>
-              {index === 0
-                ? "VI - MOTIVAÇÃO DO PEDIDO"
-                : "VI - MOTIVAÇÃO DO PEDIDO (CONTINUAÇÃO)"}
-            </div>
-
-            <p style={{ ...pdfParagraphStyle, whiteSpace: "pre-line" }}>
-              {chunk}
-            </p>
-          </PdfPageFrame>
-        ))}
-
-        <PdfPageFrame>
-          <div style={pdfHeaderStyle}>
-            <div style={pdfTitleStyle}>DECLARAÇÃO E ASSINATURA</div>
-            <div style={pdfSubTitleStyle}>
-              Requerimento de Impugnação de Lançamento - TRSD
-            </div>
-            <p style={pdfHeaderTextStyle}>
-              Prefeitura Municipal de Porto Velho - Secretaria Municipal de
-              Economia
-            </p>
-          </div>
-
-          <div style={pdfSectionTitleStyle}>VII - DECLARAÇÃO</div>
-
-          <p style={pdfParagraphStyle}>
-            Declaro, sob as penas da lei, que todas as informações constantes
-            neste requerimento são verdadeiras, completas e compatíveis com a
-            documentação apresentada.
-          </p>
-
-          <p style={pdfParagraphStyle}>
-            Declaro, ainda, estar ciente das disposições legais aplicáveis à
-            matéria, inclusive quanto à responsabilidade por eventual omissão ou
-            falsidade de informações, bem como autorizo o recebimento de
-            notificações e intimações por meio do Domicílio Tributário
-            Eletrônico (DTEL), WhatsApp e e-mail.
-          </p>
-
-          <p style={pdfParagraphStyle}>
-            Reconheço que a presente impugnação será analisada pela
-            Administração Tributária Municipal com base nos fatos, fundamentos e
-            documentos apresentados, podendo ser deferida ou indeferida conforme
-            a legislação vigente.
-          </p>
-
-          <div style={pdfHrStyle} />
-
-          <p style={{ ...pdfParagraphStyle, textAlign: "center" }}>
-            Porto Velho/RO, {formatDateExtenso(new Date())}
-          </p>
-
-          <div style={pdfSignatureAreaStyle}>
-            <div style={pdfSignatureLineStyle} />
-            <strong>{signatureName}</strong>
-            <br />
-            CPF/CNPJ: {signatureCpf}
-          </div>
-
-          <div style={pdfHrStyle} />
-
-          <p style={{ fontSize: "9pt" }}>
-            <strong>BASE LEGAL:</strong> legislação tributária municipal
-            aplicável à Taxa de Resíduos Sólidos Domiciliares (TRSD), incluindo
-            a LC 878/2021 e normas correlatas mencionadas no requerimento.
-          </p>
-        </PdfPageFrame>
-      </div>
     </>
   );
 }
