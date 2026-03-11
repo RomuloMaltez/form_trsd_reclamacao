@@ -395,9 +395,6 @@ function PdfPageFrame({ children }: { children: React.ReactNode }) {
           <div style={pdfMunicipalSubtitleStyle}>
             SECRETARIA MUNICIPAL DE ECONOMIA
           </div>
-          <div style={pdfMunicipalSmallTextStyle}>
-            Subsecretaria da Receita Municipal
-          </div>
         </div>
 
         <div style={pdfTopGreenLineStyle} />
