@@ -234,7 +234,7 @@ export default function Header() {
           </div>
 
           <div className="order-2 flex flex-col gap-3 lg:order-3 lg:items-center">
-            <div className="flex w-full items-center justify-center gap-4 lg:w-[300px]">
+            <div className="flex w-full items-center justify-center gap-4 lg:w-75">
               <div className="flex items-center gap-4">
                 <a
                   href="https://www.instagram.com/semec.pvh/"
@@ -265,14 +265,14 @@ export default function Header() {
               </div>
             </div>
 
-            <div className="relative flex w-full flex-col lg:w-[300px] lg:items-center">
+            <div className="relative flex w-full flex-col lg:w-75 lg:items-center">
               <form
                 id="site-search-form"
                 onSubmit={handleSearch}
                 aria-label="Barra de busca do portal"
-                className={`absolute top-3 left-1/2 z-10 w-full -translate-x-1/2 flex-col gap-2 lg:w-[300px] ${isSearchOpen ? "flex" : "hidden"}`}
+                className={`absolute top-3 left-1/2 z-10 w-full -translate-x-1/2 flex-col gap-2 lg:w-75 ${isSearchOpen ? "flex" : "hidden"}`}
               >
-                <div className="flex w-full items-center rounded-md border border-slate-200 bg-white shadow-lg focus-within:border-[color:var(--pv-blue-900)] focus-within:ring-2 focus-within:ring-[color:var(--pv-blue-900)]/10">
+                <div className="flex w-full items-center rounded-md border border-slate-200 bg-white shadow-lg focus-within:border-(--pv-blue-900) focus-within:ring-2 focus-within:ring-[color:var(--pv-blue-900)]/10">
                   <label htmlFor="site-search" className="sr-only">
                     O que você procura?
                   </label>
@@ -291,7 +291,7 @@ export default function Header() {
                   />
                   <button
                     type="submit"
-                    className="rounded-r-md bg-[color:var(--pv-yellow-500)] px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-yellow-400"
+                    className="rounded-r-md bg-(--pv-yellow-500) px-4 py-2 text-sm font-semibold text-slate-900 transition hover:bg-yellow-400"
                   >
                     Buscar
                   </button>
