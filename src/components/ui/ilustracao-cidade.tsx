@@ -5,7 +5,7 @@ export default function IlustracaoCidade() {
     <div className="flex h-full w-full items-center justify-center overflow-visible">
       <div className="relative w-full max-w-[1280px]">
         <Image
-          src="/semec/form_trsd_reclamacao/PortoVelhoPintura.svg"
+          src="/semec/form-trsd-reclamacaoPortoVelhoPintura.svg"
           alt="Ilustração linear destacando pontos turísticos de Porto Velho"
           width={3200}
           height={1000}
