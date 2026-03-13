@@ -269,7 +269,7 @@ export default function Footer() {
         className="h-7 w-full bg-repeat-x sm:h-9"
         style={{
           backgroundImage:
-            "url('/semec/form_trsd_reclamacao/footer-banner.png')",
+            "url('/semec/form-trsd-reclamacaofooter-banner.png')",
           backgroundSize: "328px 48px",
           backgroundPosition: "left center",
         }}
