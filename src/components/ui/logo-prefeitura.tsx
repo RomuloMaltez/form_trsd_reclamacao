@@ -21,7 +21,7 @@ export default function LogoPrefeitura({
 
   return (
     <Image
-      src="/semec/form-trsd-reclamacaologo-semec.svg"
+      src="/semec/form-trsd-reclamacao/logo-semec.svg"
       alt="Logotipo da Prefeitura de Porto Velho - SEMEC"
       width={dimensions.width}
       height={dimensions.height}
